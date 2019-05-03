@@ -1,7 +1,8 @@
 groups = {
   "hello_web" => ["node1"],
   "database" => ["node2"],
-  "all_groups:children" => ["hello_web", "database"]
+  "test" => ["node3"],
+  "all_groups:children" => ["hello_web", "database", "node3" ]
 }
 
 Vagrant.configure("2") do |config|
@@ -19,6 +20,16 @@ Vagrant.configure("2") do |config|
     node2.vm.hostname = "node2"
     node2.vm.provision "ansible_local" do |ansible|
       ansible.playbook = "provision/database.yml"
+      ansible.verbose = true
+      ansible.groups = groups
+    end
+  end
+  
+  
+  config.vm.define 'node3', autostart: false do |node3|
+    node3.vm.hostname = "node3"
+    node3.vm.provision "ansible_local" do |ansible|
+      ansible.playbook = "provision/helloworld.yml"
       ansible.verbose = true
       ansible.groups = groups
     end
